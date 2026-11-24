@@ -1,6 +1,8 @@
 # Dependencies for coursework/group_model only (versions used for the committed outputs).
 pandas==3.1.1
 numpy==2.5.5
-scikit-learn==1.9.1
+scipy==1.18.1
+statsmodels==0.15.0
+scikit-learn==1.9.1   # train_test_split and the error metrics
 matplotlib==3.11.2
 pytest>=8  # only for coursework/tests/test_group_model.py
