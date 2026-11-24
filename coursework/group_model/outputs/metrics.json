@@ -1,0 +1,301 @@
+{
+  "seed": 42,
+  "data": {
+    "db": "data/manhattan_bars.db",
+    "table": "venue_features",
+    "n_rows": 5704,
+    "outcome": "noise_complaints (NYC 311, 3 years, matched to the address)",
+    "dropped": [
+      "license_id",
+      "high_noise"
+    ],
+    "outcome_mean": 3.2898,
+    "outcome_median": 0.0,
+    "outcome_share_zero": 0.6753
+  },
+  "split": {
+    "n_train": 3992,
+    "n_test": 1712,
+    "train_mean": 3.2833,
+    "train_median": 0.0,
+    "test_mean": 3.3049,
+    "test_median": 0.0
+  },
+  "scale_choice": {
+    "raw_adj_r2_train": 0.0302,
+    "log1p_adj_r2_train": 0.116,
+    "raw_resid_skew": 18.27,
+    "log1p_resid_skew": 1.85,
+    "chosen": "log1p"
+  },
+  "baseline": {
+    "rule": "predict the training mean for every venue",
+    "prediction": 3.2833,
+    "decision_for_every_venue": "complaint_risk",
+    "test": {
+      "r2": -0.0,
+      "rmse": 14.6404,
+      "mae": 5.1474
+    },
+    "badge_counts": {
+      "tn": 0,
+      "fp": 1174,
+      "fn": 0,
+      "tp": 538
+    }
+  },
+  "v1": {
+    "model": "statsmodels OLS on log1p(noise_complaints)",
+    "terms": [
+      "bar_tavern",
+      "other_venue_type",
+      "full_liquor",
+      "osm_bar_pub_club",
+      "osm_closes_late",
+      "hood_les_chinatown",
+      "hood_east_village",
+      "hood_upper_manhattan",
+      "hood_midtown",
+      "density_100m",
+      "grade_b_or_c"
+    ],
+    "adj_r2_train_log": 0.116,
+    "r2_train_log": 0.1184,
+    "r2_test_log": 0.1245,
+    "n_train": 3992,
+    "train": {
+      "r2": -0.0124,
+      "rmse": 14.9326,
+      "mae": 3.4234
+    },
+    "test": {
+      "r2": -0.0067,
+      "rmse": 14.689,
+      "mae": 3.4546
+    },
+    "coefficients": [
+      {
+        "term": "full_liquor",
+        "coef": 0.3576,
+        "pct_change": 0.4298,
+        "p_value": 0.0,
+        "ci95": [
+          0.2902,
+          0.4249
+        ],
+        "meaning": "Spirits and later crowds: the licence tier alone is one of the strongest signals."
+      },
+      {
+        "term": "hood_upper_manhattan",
+        "coef": 0.5127,
+        "pct_change": 0.6697,
+        "p_value": 0.0,
+        "ci95": [
+          0.3946,
+          0.6307
+        ],
+        "meaning": "More residents per venue means more people who call 311."
+      },
+      {
+        "term": "hood_les_chinatown",
+        "coef": 0.4263,
+        "pct_change": 0.5315,
+        "p_value": 0.0,
+        "ci95": [
+          0.3014,
+          0.5512
+        ],
+        "meaning": "The launch area itself is a complaint hotspot, so the badge will fire often there."
+      },
+      {
+        "term": "osm_bar_pub_club",
+        "coef": 0.3306,
+        "pct_change": 0.3918,
+        "p_value": 0.0,
+        "ci95": [
+          0.2138,
+          0.4474
+        ],
+        "meaning": "Places the public map lists as nightlife behave like nightlife, whatever the licence says."
+      },
+      {
+        "term": "hood_east_village",
+        "coef": 0.2756,
+        "pct_change": 0.3173,
+        "p_value": 0.0,
+        "ci95": [
+          0.1771,
+          0.3741
+        ],
+        "meaning": "Dense bars under apartments: similar to the LES."
+      },
+      {
+        "term": "hood_midtown",
+        "coef": -0.1913,
+        "pct_change": -0.1741,
+        "p_value": 0.0,
+        "ci95": [
+          -0.26,
+          -0.1226
+        ],
+        "meaning": "Office districts empty out at night, so fewer neighbours complain."
+      },
+      {
+        "term": "bar_tavern",
+        "coef": 0.1729,
+        "pct_change": 0.1888,
+        "p_value": 0.0,
+        "ci95": [
+          0.1002,
+          0.2457
+        ],
+        "meaning": "Bars draw more complaints than restaurants with the same other traits."
+      },
+      {
+        "term": "grade_b_or_c",
+        "coef": 0.1702,
+        "pct_change": 0.1856,
+        "p_value": 0.0045,
+        "ci95": [
+          0.0528,
+          0.2877
+        ],
+        "meaning": "Venues with weaker inspection grades also draw more noise complaints, a proxy for how well they are run."
+      },
+      {
+        "term": "osm_closes_late",
+        "coef": 0.2252,
+        "pct_change": 0.2526,
+        "p_value": 0.0082,
+        "ci95": [
+          0.0583,
+          0.3921
+        ],
+        "meaning": "Late closing puts the crowd on the street when neighbours are asleep."
+      },
+      {
+        "term": "density_100m",
+        "coef": 0.0042,
+        "pct_change": 0.0042,
+        "p_value": 0.0105,
+        "ci95": [
+          0.001,
+          0.0075
+        ],
+        "meaning": "Clusters of venues add complaints, but the effect per extra venue is small."
+      },
+      {
+        "term": "other_venue_type",
+        "coef": -0.1208,
+        "pct_change": -0.1138,
+        "p_value": 0.0355,
+        "ci95": [
+          -0.2334,
+          -0.0082
+        ],
+        "meaning": "Hotel bars and venues are usually inside larger buildings, so fewer complaints reach 311."
+      }
+    ],
+    "intercept": 0.1037,
+    "badge_counts": {
+      "tn": 988,
+      "fp": 186,
+      "fn": 320,
+      "tp": 218
+    }
+  },
+  "threshold": {
+    "value": 1.0,
+    "rule": "training 75th percentile of noise_complaints",
+    "test_share_truly_loud": 0.3143
+  },
+  "decision_example": {
+    "input_file": "example_new_venue.json",
+    "input": {
+      "venue_type": "Bar/Tavern",
+      "liquor_tier": "full_liquor",
+      "neighborhood": "LES/Chinatown",
+      "cuisine": "Not matched",
+      "latest_grade": "None",
+      "osm_amenity": "bar",
+      "dohmh_matched": 0,
+      "has_pest_violation": 0,
+      "osm_closes_late": 1,
+      "osm_outdoor_seating": 0,
+      "osm_has_website": 1,
+      "lat": 40.7205,
+      "lon": -73.988,
+      "years_licensed": 0.0,
+      "n_additional_bars": 0,
+      "density_100m": 27,
+      "density_250m": 110,
+      "n_inspections": 0,
+      "mean_score": -1,
+      "max_score": -1,
+      "n_violations": 0,
+      "n_critical_violations": 0
+    },
+    "output": {
+      "predicted_complaints": 4.643,
+      "badge": "complaint_risk",
+      "rank_penalty": 0.7,
+      "rank_penalty_applies_to": "chill_preference_groups",
+      "threshold": 1.0
+    }
+  },
+  "value": {
+    "assumptions": {
+      "groups_per_month": 6000,
+      "share_chill_groups": 0.35,
+      "share_no_fresh_scout": 0.5,
+      "value_good_match_usd": 4.0,
+      "p_bad_night_if_loud": 0.4,
+      "cost_bad_night_usd": 25.0,
+      "cost_wrong_demotion_usd": 1.5
+    },
+    "rank_penalty": 0.7,
+    "baseline": {
+      "decisions_per_month": 1050.0,
+      "effective_counts": {
+        "tn": 1174,
+        "fp": 0,
+        "fn": 538,
+        "tp": 0
+      },
+      "usd_per_decision_by_cell": {
+        "tn": 4.0,
+        "fn": -10.0,
+        "tp": 4.0,
+        "fp": 2.5
+      },
+      "usd_per_decision": -0.3995,
+      "usd_per_month": -419.51
+    },
+    "v1": {
+      "decisions_per_month": 1050.0,
+      "effective_counts": {
+        "tn": 988,
+        "fp": 186,
+        "fn": 320,
+        "tp": 218
+      },
+      "usd_per_decision_by_cell": {
+        "tn": 4.0,
+        "fn": -10.0,
+        "tp": 4.0,
+        "fp": 2.5
+      },
+      "usd_per_decision": 1.2202,
+      "usd_per_month": 1281.22
+    },
+    "v1_minus_baseline_usd_per_month": 1700.73
+  },
+  "versions": {
+    "python": "3.14.3",
+    "pandas": "3.1.1",
+    "numpy": "2.5.5",
+    "statsmodels": "0.15.0",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2"
+  }
+}
