@@ -1,0 +1,210 @@
+{
+  "seed": 42,
+  "data": {
+    "db": "data/manhattan_bars.db",
+    "table": "venue_features",
+    "n_rows": 5704,
+    "outcome": "high_noise = 1 if noise_complaints >= 3 (NYC 311, 3 years)",
+    "dropped": [
+      "license_id",
+      "noise_complaints"
+    ],
+    "high_noise_rate": 0.1711
+  },
+  "split": {
+    "n_train": 3992,
+    "n_test": 1712,
+    "n_features_after_one_hot": 62,
+    "train_high_noise_count": 683,
+    "train_high_noise_rate": 0.1711,
+    "test_high_noise_count": 293,
+    "test_high_noise_rate": 0.1711
+  },
+  "baseline": {
+    "rule": "predict 0 (no badge) for every venue",
+    "train_accuracy": 0.8289,
+    "test": {
+      "confusion_matrix": [
+        [
+          1419,
+          0
+        ],
+        [
+          293,
+          0
+        ]
+      ],
+      "tn": 1419,
+      "fp": 0,
+      "fn": 293,
+      "tp": 0,
+      "accuracy": 0.8289,
+      "precision": 0.0,
+      "recall": 0.0
+    }
+  },
+  "v1": {
+    "model": "DecisionTreeClassifier",
+    "max_depth": 4,
+    "class_weight": "balanced",
+    "min_samples_leaf": 20,
+    "cv_folds": 5,
+    "cv_scoring": "balanced_accuracy",
+    "cv_mean_score_by_min_samples_leaf": {
+      "5": 0.6519,
+      "10": 0.6546,
+      "20": 0.6605,
+      "50": 0.655,
+      "100": 0.6536
+    },
+    "n_leaves": 16,
+    "depth": 4,
+    "train_accuracy": 0.7475,
+    "test": {
+      "confusion_matrix": [
+        [
+          1083,
+          336
+        ],
+        [
+          137,
+          156
+        ]
+      ],
+      "tn": 1083,
+      "fp": 336,
+      "fn": 137,
+      "tp": 156,
+      "accuracy": 0.7237,
+      "precision": 0.3171,
+      "recall": 0.5324
+    },
+    "train_minus_test_accuracy": 0.0238,
+    "feature_importance": {
+      "lat": 0.3698,
+      "osm_amenity=bar": 0.2862,
+      "liquor_tier=beer_wine": 0.1653,
+      "lon": 0.1001,
+      "neighborhood=LES/Chinatown": 0.0437,
+      "years_licensed": 0.0174,
+      "mean_score": 0.0139,
+      "density_250m": 0.0035
+    },
+    "root_split": {
+      "feature": "osm_amenity=bar",
+      "threshold": 0.5,
+      "train_high_noise_rate_le": 0.1482,
+      "train_high_noise_rate_gt": 0.4209
+    }
+  },
+  "reference_unweighted_tree": {
+    "note": "not v1; same depth, no class weights, leaf tuned on accuracy",
+    "min_samples_leaf": 50,
+    "test": {
+      "confusion_matrix": [
+        [
+          1392,
+          27
+        ],
+        [
+          266,
+          27
+        ]
+      ],
+      "tn": 1392,
+      "fp": 27,
+      "fn": 266,
+      "tp": 27,
+      "accuracy": 0.8289,
+      "precision": 0.5,
+      "recall": 0.0922
+    },
+    "value": {
+      "decisions_per_month": 1050.0,
+      "usd_per_decision_by_cell": {
+        "tn": 4.0,
+        "fn": -10.5,
+        "tp": 3.4,
+        "fp": 2.4
+      },
+      "usd_per_decision": 1.7124,
+      "usd_per_month": 1798.0
+    }
+  },
+  "decision_example": {
+    "input_file": "example_new_venue.json",
+    "input": {
+      "venue_type": "Bar/Tavern",
+      "liquor_tier": "full_liquor",
+      "neighborhood": "LES/Chinatown",
+      "cuisine": "Not matched",
+      "latest_grade": "None",
+      "osm_amenity": "bar",
+      "dohmh_matched": 0,
+      "has_pest_violation": 0,
+      "osm_closes_late": 1,
+      "osm_outdoor_seating": 0,
+      "osm_has_website": 1,
+      "lat": 40.7205,
+      "lon": -73.988,
+      "years_licensed": 0.0,
+      "n_additional_bars": 0,
+      "density_100m": 27,
+      "density_250m": 110,
+      "n_inspections": 0,
+      "mean_score": -1,
+      "max_score": -1,
+      "n_violations": 0,
+      "n_critical_violations": 0
+    },
+    "output": {
+      "badge": "complaint_risk",
+      "rank_penalty": 0.7,
+      "rank_penalty_applies_to": "chill_preference_groups",
+      "p_high_noise": 0.7346
+    }
+  },
+  "value": {
+    "assumptions": {
+      "groups_per_month": 6000,
+      "share_chill_groups": 0.35,
+      "share_no_fresh_scout": 0.5,
+      "value_good_night_usd": 4.0,
+      "p_bad_night_if_loud": 0.5,
+      "cost_bad_night_usd": 25.0,
+      "replacement_value_ratio": 0.85,
+      "cost_wrong_demotion_usd": 1.0
+    },
+    "rank_penalty": 0.7,
+    "baseline": {
+      "decisions_per_month": 1050.0,
+      "usd_per_decision_by_cell": {
+        "tn": 4.0,
+        "fn": -10.5,
+        "tp": 3.4,
+        "fp": 2.4
+      },
+      "usd_per_decision": 1.5184,
+      "usd_per_month": 1594.32
+    },
+    "v1": {
+      "decisions_per_month": 1050.0,
+      "usd_per_decision_by_cell": {
+        "tn": 4.0,
+        "fn": -10.5,
+        "tp": 3.4,
+        "fp": 2.4
+      },
+      "usd_per_decision": 2.471,
+      "usd_per_month": 2594.52
+    },
+    "v1_minus_baseline_usd_per_month": 1000.2
+  },
+  "versions": {
+    "python": "3.14.3",
+    "pandas": "3.1.1",
+    "numpy": "2.5.5",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2"
+  }
+}
