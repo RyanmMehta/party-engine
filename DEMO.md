@@ -31,7 +31,7 @@ data is synthetic (seed 42) and shows the **demo data** badge; see `SYNTHETIC_DA
 Branch for both: `nightlife/integration`. Nothing below needs a secret in the repo.
 
 **1. Backend on Render (Docker, free tier)**
-1. Render → New → **Blueprint** → connect GitHub repo `ryanmmehta/manhattan-bars-ml`, branch `nightlife/integration`, Blueprint path `render.yaml` (root).
+1. Render → New → **Blueprint** → connect GitHub repo `ryanmmehta/party-engine`, branch `nightlife/integration`, Blueprint path `render.yaml` (root).
 2. It creates web service **`nightlife-autopilot-api`** (Docker, `backend/Dockerfile`, context = repo root). Keep that name: `frontend/vercel.json` proxies `/api/*` to `https://nightlife-autopilot-api.onrender.com`. If Render gives a different URL, edit that rewrite.
 3. The image build runs `backend/scripts/build_sim.sh` → `python -m simulator --seed 42 --out data/live_sim.db` (build time, v2.2 §J); boot runs `alembic upgrade head`, checks the sim DB, starts uvicorn. The image excludes `data/manhattan_bars.db` and uses `data/launch_venues_full.csv`.
 4. Env (from `render.yaml`): `DEMO_NOW=2026-11-14T23:30:00-05:00`, `INCLUDE_SYNTHETIC=1`, `ALLOW_FIXTURE_SIM=0`, `DEMO_AUTH=1`, `RECS_MODE=auto`, `FEATURE_ROUTING=1`, `FEATURE_HEATMAP=1`, `ADMIN_TOKEN` (generated), `CORS_ORIGINS` (set to `https://<your-app>.vercel.app,http://localhost:5173`).

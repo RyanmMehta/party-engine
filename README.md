@@ -1,4 +1,6 @@
-# Nightlife Autopilot (on the Manhattan bars public-data pipeline)
+# Party Engine (Nightlife Autopilot)
+
+> **Class group model assignment:** start at [`coursework/group_model/TEAM_PLAN.md`](coursework/group_model/TEAM_PLAN.md).
 
 Help a group choose where to go **right now** by matching their preferences with fresh
 information about nearby nightlife venues. Launch area: 35 bars in Manhattan's Lower East Side

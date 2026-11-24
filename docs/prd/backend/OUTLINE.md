@@ -201,7 +201,7 @@ Setup: Render with `DEMO_NOW=2026-11-14T23:30:00-05:00`, `live_sim.db` baked in 
 
 ## 7. Deploy steps (Ryan supplies accounts)
 
-Ryan provides: a Render account connected to GitHub `ryanmmehta/manhattan-bars-ml`; integration
+Ryan provides: a Render account connected to GitHub `ryanmmehta/party-engine`; integration
 provides the Vercel URL. No paid APIs.
 1. Render → New → Blueprint → repo, branch `nightlife/backend` (integration later switches to the merged branch), Blueprint path `backend/render.yaml` (or root copy, v2 §C).
 2. `render.yaml` (to write): one `web` service, `runtime: docker`, `dockerfilePath: backend/Dockerfile`, `dockerContext: .`, `healthCheckPath: /api/health`, plan `free` (placeholder; Starter for a disk). Env: `DEMO_NOW=2026-11-14T23:30:00-05:00`, `INCLUDE_SYNTHETIC=1`, `ALLOW_FIXTURE_SIM=0`, `DEMO_AUTH=1`, `RECS_MODE=auto`, `FEATURE_ROUTING=1`, `FEATURE_HEATMAP=1`, `CORS_ORIGINS=<vercel url>,http://localhost:5173`, `ADMIN_TOKEN` (`generateValue: true`).

@@ -54,7 +54,7 @@ See `backend/README.md`. Short version:
 `pip install -r backend/requirements-dev.txt && DEMO_NOW=2026-11-14T23:30:00-05:00 backend/scripts/start.sh`.
 
 ## Deploy (Render, once Ryan has an account)
-1. Render → New → Blueprint → repo `ryanmmehta/manhattan-bars-ml`, branch `nightlife/backend`
+1. Render → New → Blueprint → repo `ryanmmehta/party-engine`, branch `nightlife/backend`
    (integration later points it at the merged branch), Blueprint path `backend/render.yaml`.
 2. The Blueprint creates one Docker web service (`dockerfilePath: backend/Dockerfile`,
    `dockerContext: .`, health check `/api/health`, plan free) with `DEMO_NOW`, `INCLUDE_SYNTHETIC=1`,

@@ -115,7 +115,7 @@ Baseline: no bounties, **$0 per month**. Difference: **+$1,813 per month**
 | Slide | Item | Where it comes from |
 |---|---|---|
 | Title | Team name, members | Nightlife Autopilot, Group 7: Meira Berlow, Abhiviraj, Ryan Mehta, Dawid Litwiniec |
-| Title | Repo link and script path | https://github.com/RyanmMehta/manhattan-bars-ml/blob/nightlife/integration/coursework/group_model/bar_popularity_regression.py |
+| Title | Repo link and script path | https://github.com/RyanmMehta/party-engine/blob/nightlife/integration/coursework/group_model/bar_popularity_regression.py |
 | 1 | Data source, rows, period, split | `DATA.md` table; `split.n_train`, `split.n_test` |
 | 1 | Outcome, features, family | §2 above |
 | 1 | Key training fit statistic | `v1.adj_r2_train_log` = 0.344 |

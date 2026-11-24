@@ -33,7 +33,7 @@ See `.env.example`: `VITE_API_MODE` (mock|live), `VITE_API_BASE`, `VITE_DEMO_NOW
 `VITE_FEATURE_HEATMAP`. `.env.production` defaults to **mock** until the Render URL is confirmed.
 
 ## Deploy to Vercel (not deployed yet; no account)
-1. In Vercel: **Add New → Project →** import `ryanmmehta/manhattan-bars-ml`, branch `nightlife/integration`
+1. In Vercel: **Add New → Project →** import `ryanmmehta/party-engine`, branch `nightlife/integration`
    (or `nightlife/frontend` for a preview). **Root Directory: `frontend`**. Framework preset: Vite (also set in `vercel.json`).
 2. Environment variables (Production and Preview):
    - Demo without backend: `VITE_API_MODE=mock`, `VITE_DEMO_NOW=2026-11-14T23:30:00-05:00`, `VITE_FEATURE_ROUTING=1`, `VITE_FEATURE_HEATMAP=1`.
