@@ -70,7 +70,9 @@ Venues at or above common cut-offs: 1 or more 1,852 (32.5%); 3 or more 976 (17.1
 
 What this means for a linear regression: the count is heavily right-skewed (mean 3.29 but median 0; the top 1% of venues, 57 of them, account for 33.9% of all matched complaints). A straight OLS fit on the raw count is pulled hard by a few extreme venues. Fitting on `log1p(noise_complaints)` (mean 0.54, sd 0.98 on that scale) and converting predictions back with `expm1` is the usual remedy; errors should then be reported back in complaint units, as the script plans. Note that back-transformed log predictions estimate something closer to the typical (median-like) count than the mean, so they tend to run below the raw mean.
 
-The mean baseline predicts the training-set mean (about 3.3 complaints) for every venue; the exact figure is in `outputs/metrics.json`.
+The script (`venue_noise_regression.py`, seed 42) does fit on log1p: raw-count OLS had adjusted R² 0.030 and residual skew 18.27, against 0.116 and 1.85 on log1p (`scale_choice` in `outputs/metrics.json`). The mean baseline predicts the training-set mean, 3.2833 complaints, for every venue (`baseline.prediction`). Training rows: 3,992 (mean 3.28, median 0); test rows: 1,712 (mean 3.30, median 0); random split, not stratified.
+
+**Decision threshold, a separate line:** the script badges a venue when its predicted complaints are at or above `T = 1` complaint (the training 75th percentile; `threshold.value`). This is not the same as `high_noise` (3 or more complaints, built into the table by `build_db.py`). 31.4% of test venues are at or above `T`.
 
 ## 3. Data dictionary (`PRAGMA table_info(venue_features)`)
 
@@ -102,9 +104,27 @@ Role legend: **Outcome** = what the model predicts. **Excluded as leakage** = ne
 | 21 | `n_violations` | REAL | Violation rows across all inspections; 0 if no match (0 to 66) | DOHMH | Feature |
 | 22 | `n_critical_violations` | REAL | Violation rows flagged Critical (0 to 38) | DOHMH | Feature |
 | 23 | `noise_complaints` | INTEGER | **Outcome.** Count of 311 complaints matched to this venue's address over the 3 years to 2026-10-19 (0 to 567; mean 3.29, median 0, 67.5% zero) | NYC 311 | **Outcome** |
-| 24 | `high_noise` | INTEGER | 1 if `noise_complaints >= 3`, else 0 (976 rows are 1, 17.11%). Threshold `3` set in `build_features` | NYC 311 (derived from the outcome) | **Excluded as leakage** |
+| 24 | `high_noise` | INTEGER | 1 if `noise_complaints >= 3`, else 0 (976 rows are 1, 17.11%). Threshold `3` set in `build_features`; unrelated to the model's badge threshold `T = 1` | NYC 311 (derived from the outcome) | **Excluded as leakage** |
 
-Why `high_noise` is excluded: it is computed directly from `noise_complaints` (`noise_complaints >= 3`), so as a feature it would hand the regression most of the answer and inflate R² meaninglessly. The model is also not given `license_id` (a unique key carries no pattern). The categorical features (`venue_type`, `liquor_tier`, `neighborhood`, `cuisine`, `latest_grade`, `osm_amenity`) must be turned into dummy (0/1) columns for OLS, with one level per column dropped as the reference.
+Why `high_noise` is excluded: it is computed directly from `noise_complaints` (`noise_complaints >= 3`), so as a feature it would hand the regression most of the answer and inflate R² meaninglessly. The model is also not given `license_id` (a unique key carries no pattern). Both are listed in `data.dropped` in `outputs/metrics.json`.
+
+**Which Feature columns the v1 model actually uses.** "Feature" above means available to the model. The script builds 11 terms from 7 of them and leaves the rest out (it found near-zero correlation or p > 0.4 in a first fit for inspection counts and scores, `years_licensed`, `density_250m`, website and outdoor seating):
+
+| Model term | Built from | 1 when |
+|---|---|---|
+| `bar_tavern` | `venue_type` | Bar/Tavern (reference: Restaurant) |
+| `other_venue_type` | `venue_type` | Hotel, Club, Venue/Theatre or Nightlife |
+| `full_liquor` | `liquor_tier` | full liquor (reference: beer/wine) |
+| `osm_bar_pub_club` | `osm_amenity` | bar, pub or nightclub in OSM |
+| `osm_closes_late` | `osm_closes_late` | closes at or after 2 am |
+| `hood_les_chinatown` | `neighborhood` | LES/Chinatown |
+| `hood_east_village` | `neighborhood` | East Village |
+| `hood_upper_manhattan` | `neighborhood` | Harlem, East Harlem or Washington Heights/Inwood |
+| `hood_midtown` | `neighborhood` | Midtown West or Midtown East/Murray Hill |
+| `density_100m` | `density_100m` | numeric: other venues within 100 m |
+| `grade_b_or_c` | `latest_grade` | latest grade B or C |
+
+Not used by v1: `cuisine`, `dohmh_matched`, `has_pest_violation`, `osm_outdoor_seating`, `osm_has_website`, `lat`, `lon`, `years_licensed`, `n_additional_bars`, `density_250m`, `n_inspections`, `mean_score`, `max_score`, `n_violations`, `n_critical_violations`.
 
 ## 4. Data honesty
 
@@ -113,10 +133,10 @@ This table is real public data, not synthetic. Every row is one actual NY State 
 ## 5. Things the model session and the slides should know
 
 1. **Shared complaint counts and the 70/30 split.** Venues that share a street address share one 311 count: 324 addresses host 769 venues (13.5% of rows). A random 70/30 split can put two venues from the same address in train and test with the same outcome, which slightly flatters test R². Keep the 70/30 split the assignment asks for, but state this in one line (or optionally split by address as a robustness check).
-2. **Heavy missingness is encoded as sentinels, not NULL.** No column has SQL NULLs. Missing inspection data shows up as `mean_score`/`max_score` = -1 (1,031 rows; 716 unmatched to DOHMH plus 315 matched with no score), `n_inspections` = 0 (1,002), `latest_grade` = `None` (1,002), `cuisine` = `Not matched` (716). Missing OSM data shows up as `osm_amenity` = `not_listed` (5,039 of 5,704, 88%) and 0 in the three OSM binary columns. **For a linear regression the -1 sentinel is a problem:** OLS treats -1 as a real score just below 0, so a single slope gets fitted across "no record" and real scores. Either add a "has score" indicator and set the sentinel to 0 (or to the mean of real scores), or rely on `dohmh_matched` plus a separate indicator for the 315 matched-but-unscored rows. Do not take means over -1.
+2. **Heavy missingness is encoded as sentinels, not NULL.** No column has SQL NULLs. Missing inspection data shows up as `mean_score`/`max_score` = -1 (1,031 rows; 716 unmatched to DOHMH plus 315 matched with no score), `n_inspections` = 0 (1,002), `latest_grade` = `None` (1,002), `cuisine` = `Not matched` (716). Missing OSM data shows up as `osm_amenity` = `not_listed` (5,039 of 5,704, 88%) and 0 in the three OSM binary columns. For a linear regression a -1 sentinel would be read as a real score; v1 sidesteps this because it does not use `mean_score` or `max_score`, and its only DOHMH term (`grade_b_or_c`) treats `None` as 0. Anyone extending the model should add a "has score" indicator rather than use -1 as a number.
 3. **OSM coverage is thin and informative.** Only 665 rows (11.7%) have an OSM match, but those rows have far higher counts: mean `noise_complaints` is 14.6 for `osm_amenity = nightclub`, 8.76 for `bar`, 3.95 for `pub` and 2.70 for `not_listed`; 9.46 when `osm_closes_late = 1` vs 2.96 otherwise. Expect large positive coefficients on these. Also expect `venue_type`, `neighborhood`, `liquor_tier` and location to matter: Bar/Tavern mean 4.84 vs Club 0.52 and Venue/Theatre 0.10; full liquor 4.02 vs beer/wine 1.29; Washington Heights/Inwood 9.35, LES/Chinatown 8.51, Harlem 6.65, East Village 4.83 vs Midtown West 1.73 and Midtown East/Murray Hill 1.46.
 4. **`years_licensed` is the age of the current license record, not of the venue.** The SLA active-license list only holds records issued from 2022-05-23, so the range is 0 to 2.93 years and 3,078 rows are under 1 year. Do not describe it as "how long the bar has existed".
-5. **19 rows have coordinates outside Manhattan** (latitude up to 43.05, longitude down to -76.07; bad SLA coordinates). None of the 19 has 3 or more complaints. For a linear model `lat`/`lon` enter as straight slopes, so these outliers can tilt the location coefficients; consider dropping or clipping them, and note that a straight north-south slope is a crude stand-in for neighborhood (which is already a feature).
+5. **19 rows have coordinates outside Manhattan** (latitude up to 43.05, longitude down to -76.07; bad SLA coordinates). None of the 19 has 3 or more complaints. v1 does not use `lat`/`lon` (location enters through neighborhood terms), so they do not affect the model, but they would be wrong on a map.
 6. **README column count is stale:** it says 24 columns and 5,737 venues for the venue table; `venue_features` has 25 columns and 5,704 rows (33 venues dropped for missing coordinates or issue date). Use 5,704 and 25.
-7. **Skew and outliers dominate the error metrics.** With median 0 and a max of 567, RMSE on raw counts is driven by a handful of venues and will look large next to MAE; the mean baseline's RMSE is roughly the standard deviation (about 14.8). Expect R² to be modest. MAE and RMSE in complaint units, compared with the mean baseline, carry the story (see `BUSINESS.md`, "How each number is calculated").
-8. **The app's current complaint bands are different from the model's badge threshold.** The backend shows 311 risk as low/medium/high from raw counts (under 25, 25 to 99, 100 or more; a placeholder), whereas the model script sets its own badge threshold as an ASSUMPTION. Do not mix the two on a slide.
+7. **Skew and outliers dominate the error metrics.** With median 0 and a max of 567, RMSE on raw counts is driven by a handful of venues. In the script's test results the mean baseline has RMSE 14.64 and MAE 5.15; v1 has RMSE 14.69 and MAE 3.45, and R² in complaint units is about 0 for both. See "Read this before presenting" in `BUSINESS.md`.
+8. **Three different complaint lines exist; do not mix them on a slide.** The backend's display bands (under 25, 25 to 99, 100 or more; a placeholder), `high_noise` in this table (3 or more), and the model's badge threshold `T = 1` (training 75th percentile, an ASSUMPTION in the script).
