@@ -15,3 +15,6 @@ data/synthetic_live/*.csv
 !data/synthetic_live/demo_night_snapshots.csv
 data/synthetic_live/extracts/
 data/synthetic_live/shifted/
+
+# Yelp Open Dataset: academic use only, may not be redistributed (downloaded by the group model script)
+data/external/

@@ -1,294 +1,314 @@
 {
   "seed": 42,
   "data": {
-    "db": "data/manhattan_bars.db",
-    "table": "venue_features",
-    "n_rows": 5704,
-    "outcome": "noise_complaints (NYC 311, 3 years, matched to the address)",
-    "dropped": [
-      "license_id",
-      "high_noise"
+    "source": "Yelp Open Dataset, business file (academic use; not redistributed)",
+    "rows": 5406,
+    "cities": [
+      "Boise",
+      "Edmonton",
+      "Indianapolis",
+      "Nashville",
+      "New Orleans",
+      "Philadelphia",
+      "Reno",
+      "Saint Louis",
+      "Santa Barbara",
+      "Tampa",
+      "Tucson"
     ],
-    "outcome_mean": 3.2898,
-    "outcome_median": 0.0,
-    "outcome_share_zero": 0.6753
+    "filter": "categories include Bars and Nightlife; is_open = 1; price level and noise level recorded"
   },
   "split": {
-    "n_train": 3992,
-    "n_test": 1712,
-    "train_mean": 3.2833,
-    "train_median": 0.0,
-    "test_mean": 3.3049,
-    "test_median": 0.0
-  },
-  "scale_choice": {
-    "raw_adj_r2_train": 0.0302,
-    "log1p_adj_r2_train": 0.116,
-    "raw_resid_skew": 18.27,
-    "log1p_resid_skew": 1.85,
-    "chosen": "log1p"
+    "n_train": 3784,
+    "n_test": 1622,
+    "train_mean_reviews": 193.36,
+    "train_median_reviews": 109.0,
+    "test_mean_reviews": 205.26
   },
   "baseline": {
-    "rule": "predict the training mean for every venue",
-    "prediction": 3.2833,
-    "decision_for_every_venue": "complaint_risk",
+    "rule": "predict the training mean for every bar",
+    "prediction": 193.36,
     "test": {
-      "r2": -0.0,
-      "rmse": 14.6404,
-      "mae": 5.1474
+      "r2": -0.0016,
+      "rmse": 301.33,
+      "mae": 172.24,
+      "median_abs_error": 130.36
     },
-    "badge_counts": {
-      "tn": 0,
-      "fp": 1174,
-      "fn": 0,
-      "tp": 538
+    "test_log_r2": -0.2627,
+    "bounty_for_every_bar": false,
+    "bounty_counts": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 415,
+      "tn": 1207
     }
   },
   "v1": {
-    "model": "statsmodels OLS on log1p(noise_complaints)",
+    "model": "statsmodels OLS on log1p(review_count)",
     "terms": [
-      "bar_tavern",
-      "other_venue_type",
-      "full_liquor",
-      "osm_bar_pub_club",
-      "osm_closes_late",
-      "hood_les_chinatown",
-      "hood_east_village",
-      "hood_upper_manhattan",
-      "hood_midtown",
-      "density_100m",
-      "grade_b_or_c"
+      "price_cheap",
+      "price_high",
+      "noise_quiet",
+      "noise_loud",
+      "noise_very_loud",
+      "music_dj",
+      "music_live",
+      "music_karaoke",
+      "music_jukebox",
+      "good_for_dancing",
+      "happy_hour",
+      "closes_late_weekend",
+      "good_for_groups",
+      "outdoor_seating",
+      "has_tv",
+      "serves_food",
+      "cocktail_bar",
+      "dive_bar",
+      "sports_bar",
+      "wine_bar",
+      "pub",
+      "lounge",
+      "dance_club",
+      "beer_bar",
+      "music_venue"
     ],
-    "adj_r2_train_log": 0.116,
-    "r2_train_log": 0.1184,
-    "r2_test_log": 0.1245,
-    "n_train": 3992,
-    "train": {
-      "r2": -0.0124,
-      "rmse": 14.9326,
-      "mae": 3.4234
-    },
+    "adj_r2_train_log": 0.3445,
+    "r2_train_log": 0.3488,
+    "r2_test_log": 0.3319,
     "test": {
-      "r2": -0.0067,
-      "rmse": 14.689,
-      "mae": 3.4546
+      "r2": 0.0413,
+      "rmse": 294.81,
+      "mae": 136.04,
+      "median_abs_error": 56.74
     },
+    "train": {
+      "r2": 0.0769,
+      "rmse": 270.97,
+      "mae": 124.44,
+      "median_abs_error": 57.22
+    },
+    "intercept": 4.0156,
     "coefficients": [
       {
-        "term": "full_liquor",
-        "coef": 0.3576,
-        "pct_change": 0.4298,
-        "p_value": 0.0,
-        "ci95": [
-          0.2902,
-          0.4249
-        ],
-        "meaning": "Spirits and later crowds: the licence tier alone is one of the strongest signals."
+        "term": "serves_food",
+        "coef": 0.7614,
+        "pct_change_reviews": 114.1,
+        "p": 1.765414460190008e-62
       },
       {
-        "term": "hood_upper_manhattan",
-        "coef": 0.5127,
-        "pct_change": 0.6697,
-        "p_value": 0.0,
-        "ci95": [
-          0.3946,
-          0.6307
-        ],
-        "meaning": "More residents per venue means more people who call 311."
+        "term": "outdoor_seating",
+        "coef": 0.3836,
+        "pct_change_reviews": 46.8,
+        "p": 3.851255181856755e-29
       },
       {
-        "term": "hood_les_chinatown",
-        "coef": 0.4263,
-        "pct_change": 0.5315,
-        "p_value": 0.0,
-        "ci95": [
-          0.3014,
-          0.5512
-        ],
-        "meaning": "The launch area itself is a complaint hotspot, so the badge will fire often there."
+        "term": "music_venue",
+        "coef": 0.3685,
+        "pct_change_reviews": 44.6,
+        "p": 7.965879651676684e-07
       },
       {
-        "term": "osm_bar_pub_club",
-        "coef": 0.3306,
-        "pct_change": 0.3918,
-        "p_value": 0.0,
-        "ci95": [
-          0.2138,
-          0.4474
-        ],
-        "meaning": "Places the public map lists as nightlife behave like nightlife, whatever the licence says."
+        "term": "good_for_groups",
+        "coef": 0.3429,
+        "pct_change_reviews": 40.9,
+        "p": 4.922264165205752e-06
       },
       {
-        "term": "hood_east_village",
-        "coef": 0.2756,
-        "pct_change": 0.3173,
-        "p_value": 0.0,
-        "ci95": [
-          0.1771,
-          0.3741
-        ],
-        "meaning": "Dense bars under apartments: similar to the LES."
+        "term": "music_jukebox",
+        "coef": 0.2571,
+        "pct_change_reviews": 29.3,
+        "p": 0.00010295123588998304
       },
       {
-        "term": "hood_midtown",
-        "coef": -0.1913,
-        "pct_change": -0.1741,
-        "p_value": 0.0,
-        "ci95": [
-          -0.26,
-          -0.1226
-        ],
-        "meaning": "Office districts empty out at night, so fewer neighbours complain."
+        "term": "cocktail_bar",
+        "coef": 0.2168,
+        "pct_change_reviews": 24.2,
+        "p": 2.600433897773809e-06
       },
       {
-        "term": "bar_tavern",
-        "coef": 0.1729,
-        "pct_change": 0.1888,
-        "p_value": 0.0,
-        "ci95": [
-          0.1002,
-          0.2457
-        ],
-        "meaning": "Bars draw more complaints than restaurants with the same other traits."
+        "term": "happy_hour",
+        "coef": 0.2125,
+        "pct_change_reviews": 23.7,
+        "p": 4.710484762636567e-10
       },
       {
-        "term": "grade_b_or_c",
-        "coef": 0.1702,
-        "pct_change": 0.1856,
-        "p_value": 0.0045,
-        "ci95": [
-          0.0528,
-          0.2877
-        ],
-        "meaning": "Venues with weaker inspection grades also draw more noise complaints, a proxy for how well they are run."
+        "term": "beer_bar",
+        "coef": 0.1896,
+        "pct_change_reviews": 20.9,
+        "p": 0.00126101520332968
       },
       {
-        "term": "osm_closes_late",
-        "coef": 0.2252,
-        "pct_change": 0.2526,
-        "p_value": 0.0082,
-        "ci95": [
-          0.0583,
-          0.3921
-        ],
-        "meaning": "Late closing puts the crowd on the street when neighbours are asleep."
+        "term": "dance_club",
+        "coef": 0.1686,
+        "pct_change_reviews": 18.4,
+        "p": 0.13574853030566458
       },
       {
-        "term": "density_100m",
-        "coef": 0.0042,
-        "pct_change": 0.0042,
-        "p_value": 0.0105,
-        "ci95": [
-          0.001,
-          0.0075
-        ],
-        "meaning": "Clusters of venues add complaints, but the effect per extra venue is small."
+        "term": "price_high",
+        "coef": 0.1307,
+        "pct_change_reviews": 14.0,
+        "p": 0.04804127805685213
       },
       {
-        "term": "other_venue_type",
-        "coef": -0.1208,
-        "pct_change": -0.1138,
-        "p_value": 0.0355,
-        "ci95": [
-          -0.2334,
-          -0.0082
-        ],
-        "meaning": "Hotel bars and venues are usually inside larger buildings, so fewer complaints reach 311."
+        "term": "wine_bar",
+        "coef": 0.0804,
+        "pct_change_reviews": 8.4,
+        "p": 0.14008626273962946
+      },
+      {
+        "term": "dive_bar",
+        "coef": 0.0447,
+        "pct_change_reviews": 4.6,
+        "p": 0.5142679552284036
+      },
+      {
+        "term": "good_for_dancing",
+        "coef": 0.0301,
+        "pct_change_reviews": 3.1,
+        "p": 0.6345208141173031
+      },
+      {
+        "term": "music_dj",
+        "coef": 0.027,
+        "pct_change_reviews": 2.7,
+        "p": 0.7976308909001091
+      },
+      {
+        "term": "noise_loud",
+        "coef": -0.0196,
+        "pct_change_reviews": -1.9,
+        "p": 0.6619284768900631
+      },
+      {
+        "term": "music_live",
+        "coef": -0.0769,
+        "pct_change_reviews": -7.4,
+        "p": 0.07876887547030985
+      },
+      {
+        "term": "pub",
+        "coef": -0.1199,
+        "pct_change_reviews": -11.3,
+        "p": 0.005274900049382423
+      },
+      {
+        "term": "lounge",
+        "coef": -0.1917,
+        "pct_change_reviews": -17.4,
+        "p": 0.000518889985365349
+      },
+      {
+        "term": "closes_late_weekend",
+        "coef": -0.2134,
+        "pct_change_reviews": -19.2,
+        "p": 1.7200535253664507e-08
+      },
+      {
+        "term": "noise_very_loud",
+        "coef": -0.2499,
+        "pct_change_reviews": -22.1,
+        "p": 0.0010893218814483987
+      },
+      {
+        "term": "music_karaoke",
+        "coef": -0.3178,
+        "pct_change_reviews": -27.2,
+        "p": 0.09639880036499103
+      },
+      {
+        "term": "sports_bar",
+        "coef": -0.377,
+        "pct_change_reviews": -31.4,
+        "p": 5.3337003311677434e-20
+      },
+      {
+        "term": "has_tv",
+        "coef": -0.4636,
+        "pct_change_reviews": -37.1,
+        "p": 4.489249063638983e-18
+      },
+      {
+        "term": "noise_quiet",
+        "coef": -0.6327,
+        "pct_change_reviews": -46.9,
+        "p": 1.4283767509978527e-17
+      },
+      {
+        "term": "price_cheap",
+        "coef": -0.741,
+        "pct_change_reviews": -52.3,
+        "p": 1.652104908218047e-53
       }
     ],
-    "intercept": 0.1037,
-    "badge_counts": {
-      "tn": 988,
-      "fp": 186,
-      "fn": 320,
-      "tp": 218
+    "bounty_counts": {
+      "tp": 86,
+      "fp": 68,
+      "fn": 329,
+      "tn": 1139
     }
   },
   "threshold": {
-    "value": 1.0,
-    "rule": "training 75th percentile of noise_complaints",
-    "test_share_truly_loud": 0.3143
+    "reviews": 233.0,
+    "rule": "training 75th percentile of review_count",
+    "test_share_popular": 0.2559
   },
   "decision_example": {
-    "input_file": "example_new_venue.json",
+    "input_file": "example_new_bar.json",
     "input": {
-      "venue_type": "Bar/Tavern",
-      "liquor_tier": "full_liquor",
-      "neighborhood": "LES/Chinatown",
-      "cuisine": "Not matched",
-      "latest_grade": "None",
-      "osm_amenity": "bar",
-      "dohmh_matched": 0,
-      "has_pest_violation": 0,
-      "osm_closes_late": 1,
-      "osm_outdoor_seating": 0,
-      "osm_has_website": 1,
-      "lat": 40.7205,
-      "lon": -73.988,
-      "years_licensed": 0.0,
-      "n_additional_bars": 0,
-      "density_100m": 27,
-      "density_250m": 110,
-      "n_inspections": 0,
-      "mean_score": -1,
-      "max_score": -1,
-      "n_violations": 0,
-      "n_critical_violations": 0
+      "name": "New LES cocktail lounge (example)",
+      "categories": "Bars, Nightlife, Cocktail Bars, Lounges",
+      "attributes": {
+        "RestaurantsPriceRange2": "2",
+        "NoiseLevel": "u'loud'",
+        "Music": "{'dj': True, 'live': False, 'karaoke': False, 'jukebox': False}",
+        "GoodForDancing": "True",
+        "HappyHour": "True",
+        "RestaurantsGoodForGroups": "True",
+        "OutdoorSeating": "False",
+        "HasTV": "False"
+      },
+      "hours": {
+        "Thursday": "18:0-1:0",
+        "Friday": "18:0-2:0",
+        "Saturday": "18:0-2:0"
+      }
     },
     "output": {
-      "predicted_complaints": 4.643,
-      "badge": "complaint_risk",
-      "rank_penalty": 0.7,
-      "rank_penalty_applies_to": "chill_preference_groups",
-      "threshold": 1.0
+      "predicted_reviews": 82.1,
+      "scout_bounty": false,
+      "threshold_reviews": 233.0
     }
   },
   "value": {
     "assumptions": {
-      "groups_per_month": 6000,
-      "share_chill_groups": 0.35,
-      "share_no_fresh_scout": 0.5,
-      "value_good_match_usd": 4.0,
-      "p_bad_night_if_loud": 0.4,
-      "cost_bad_night_usd": 25.0,
-      "cost_wrong_demotion_usd": 1.5
+      "bars_in_launch_neighbourhood": 200,
+      "bounty_cost_usd_per_bar_month": 150.0,
+      "value_fresh_info_popular_bar_usd_month": 400.0,
+      "value_fresh_info_other_bar_usd_month": 50.0
     },
-    "rank_penalty": 0.7,
     "baseline": {
-      "decisions_per_month": 1050.0,
-      "effective_counts": {
-        "tn": 1174,
-        "fp": 0,
-        "fn": 538,
-        "tp": 0
+      "usd_per_bar_by_outcome": {
+        "tp": 250.0,
+        "fp": -100.0,
+        "fn": 0.0,
+        "tn": 0.0
       },
-      "usd_per_decision_by_cell": {
-        "tn": 4.0,
-        "fn": -10.0,
-        "tp": 4.0,
-        "fp": 2.5
-      },
-      "usd_per_decision": -0.3995,
-      "usd_per_month": -419.51
+      "usd_per_bar": 0.0,
+      "usd_per_month": 0.0,
+      "bounties_per_month": 0.0
     },
     "v1": {
-      "decisions_per_month": 1050.0,
-      "effective_counts": {
-        "tn": 988,
-        "fp": 186,
-        "fn": 320,
-        "tp": 218
+      "usd_per_bar_by_outcome": {
+        "tp": 250.0,
+        "fp": -100.0,
+        "fn": 0.0,
+        "tn": 0.0
       },
-      "usd_per_decision_by_cell": {
-        "tn": 4.0,
-        "fn": -10.0,
-        "tp": 4.0,
-        "fp": 2.5
-      },
-      "usd_per_decision": 1.2202,
-      "usd_per_month": 1281.22
+      "usd_per_bar": 9.063,
+      "usd_per_month": 1812.58,
+      "bounties_per_month": 19.0
     },
-    "v1_minus_baseline_usd_per_month": 1700.73
+    "v1_minus_baseline_usd_per_month": 1812.58
   },
   "versions": {
     "python": "3.14.3",
